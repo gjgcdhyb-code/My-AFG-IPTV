@@ -50,7 +50,8 @@ def update_m3u_file(working_user):
         # إضافة الفيلم بالتنسيق اللي صممته أنت (VOD)
         f.write("\n#--- CINEMANA MOVIES ---\n")
         f.write(f'#EXTINF:-1 tvg-id="" tvg-name="{movie_name}" tvg-logo="{movie_logo}" group-title="SHABAKATY | Cinemana",{movie_name}\n')
-        f.write(f"{SERVER}/movie/{working_user}/{TOKEN_SECRET}/{movie_id}.mp4\n")
+        # السطر المحدث للامتداد mkv
+f.write(f"{SERVER}/movie/{working_user}/{TOKEN_SECRET}/{movie_id}.mkv\n")
 
     print(f"✅ تم تحديث الملف بنجاح مع اليوزر: {working_user}")
 
