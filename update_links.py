@@ -33,7 +33,6 @@ def get_movie_stream(user, movie_id):
         return f"{SERVER}/movie/{user}/{TOKEN_SECRET}/{movie_id}.mp4" # رابط احتياطي
 
 def update_m3u_file(working_user):
-    # معلومات الفيلم اللي اختاريته
     movie_id = "3074816"
     movie_name = "Cinemana Movie (3074816)"
     movie_logo = "https://cinemana.shabakaty.cc/assets/images/loading_video.gif"
@@ -47,13 +46,13 @@ def update_m3u_file(working_user):
             f.write(f'#EXTINF:-1 tvg-id="AFG_{ch}" group-title="AFGHAN LIVE", AFG CHANNEL {ch}\n')
             f.write(f"{SERVER}/{working_user}/{TOKEN_SECRET}/{ch}.ts\n")
             
-        # إضافة الفيلم بالتنسيق اللي صممته أنت (VOD)
+        # إضافة الفيلم بامتداد mkv
         f.write("\n#--- CINEMANA MOVIES ---\n")
         f.write(f'#EXTINF:-1 tvg-id="" tvg-name="{movie_name}" tvg-logo="{movie_logo}" group-title="SHABAKATY | Cinemana",{movie_name}\n')
-        # السطر المحدث للامتداد mkv
-f.write(f"{SERVER}/movie/{working_user}/{TOKEN_SECRET}/{movie_id}.mkv\n")
+        f.write(f"{SERVER}/movie/{working_user}/{TOKEN_SECRET}/{movie_id}.mkv\n")
 
-    print(f"✅ تم تحديث الملف بنجاح مع اليوزر: {working_user}")
+    # هذا السطر (56) يجب أن يكون بمحاذاة "with" وليس بداخله أو بمسافة عشوائية
+    print(f"✅ تم تحديث الملف بنجاح مع اليوزر: {working_user}"))
 
 def start_fuzzing():
     print("🚀 جاري بدء عملية الفحص وتخمين الحسابات...")
