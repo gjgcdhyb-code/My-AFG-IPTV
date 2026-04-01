@@ -33,27 +33,26 @@ def get_movie_stream(user, movie_id):
         return f"{SERVER}/movie/{user}/{TOKEN_SECRET}/{movie_id}.mp4" # رابط احتياطي
 
 def update_m3u_file(working_user):
-    movie_id = "3074816"
-    movie_name = "Cinemana Movie (3074816)"
-    movie_logo = "https://cinemana.shabakaty.cc/assets/images/loading_video.gif"
+    # نستخدم معلومات من قائمة الـ JSON اللي استخرجتها
+    movie_id = "139960" # ID فيلم Dakota
+    movie_name = "Dakota (2022)"
+    movie_logo = "https://image.tmdb.org/t/p/w600_and_h900_bestv2/j3eUOPUoDwkupwTPTDk6ESqrzGt.jpg"
     
     with open("playlist.m3u", "w", encoding="utf-8") as f:
         f.write("#EXTM3U\n")
         
-        # إضافة القنوات (Live)
+        # إضافة القنوات (Live) تبقى كما هي
         f.write("\n#--- LIVE TV ---\n")
         for ch in CHANNELS:
             f.write(f'#EXTINF:-1 tvg-id="AFG_{ch}" group-title="AFGHAN LIVE", AFG CHANNEL {ch}\n')
             f.write(f"{SERVER}/{working_user}/{TOKEN_SECRET}/{ch}.ts\n")
             
-        # إضافة الفيلم بامتداد mkv
-        f.write("\n#--- CINEMANA MOVIES ---\n")
-        f.write(f'#EXTINF:-1 tvg-id="" tvg-name="{movie_name}" tvg-logo="{movie_logo}" group-title="SHABAKATY | Cinemana",{movie_name}\n')
+        # إضافة الفيلم بالـ ID الحقيقي والامتداد mkv
+        f.write("\n#--- SERVER MOVIES ---\n")
+        f.write(f'#EXTINF:-1 tvg-id="" tvg-name="{movie_name}" tvg-logo="{movie_logo}" group-title="MOVIES | Action",{movie_name}\n')
         f.write(f"{SERVER}/movie/{working_user}/{TOKEN_SECRET}/{movie_id}.mkv\n")
 
-    # هذا السطر (56) يجب أن يكون بمحاذاة "with" وليس بداخله أو بمسافة عشوائية
-    print(f"✅ تم تحديث الملف بنجاح مع اليوزر: {working_user}")
-
+    print(f"✅ تم التحديث بنجاح باستخدام الفيلم الحقيقي: {movie_name}")
 def start_fuzzing():
     print("🚀 جاري بدء عملية الفحص وتخمين الحسابات...")
     for i in range(100, 999):
