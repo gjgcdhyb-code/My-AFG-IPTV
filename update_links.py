@@ -33,26 +33,26 @@ def get_movie_stream(user, movie_id):
         return f"{SERVER}/movie/{user}/{TOKEN_SECRET}/{movie_id}.mp4" # رابط احتياطي
 
 def update_m3u_file(working_user):
-    # نستخدم معلومات من قائمة الـ JSON اللي استخرجتها
-    movie_id = "139960" # ID فيلم Dakota
-    movie_name = "Dakota (2022)"
-    movie_logo = "https://image.tmdb.org/t/p/w600_and_h900_bestv2/j3eUOPUoDwkupwTPTDk6ESqrzGt.jpg"
+    # البيانات المستخرجة من الـ JSON اللي أرسلته
+    movie_id = "139908" 
+    movie_name = "Ambush In The Slim Brunette"
     
     with open("playlist.m3u", "w", encoding="utf-8") as f:
         f.write("#EXTM3U\n")
         
-        # إضافة القنوات (Live) تبقى كما هي
+        # قسم القنوات (Live) يبقى كما هو
         f.write("\n#--- LIVE TV ---\n")
         for ch in CHANNELS:
             f.write(f'#EXTINF:-1 tvg-id="AFG_{ch}" group-title="AFGHAN LIVE", AFG CHANNEL {ch}\n')
             f.write(f"{SERVER}/{working_user}/{TOKEN_SECRET}/{ch}.ts\n")
             
-        # إضافة الفيلم بالـ ID الحقيقي والامتداد mkv
+        # قسم الأفلام (VOD) بالتعديل الجديد
         f.write("\n#--- SERVER MOVIES ---\n")
-        f.write(f'#EXTINF:-1 tvg-id="" tvg-name="{movie_name}" tvg-logo="{movie_logo}" group-title="MOVIES | Action",{movie_name}\n')
+        # لاحظ استخدام الامتداد mkv كما هو مذكور في الـ JSON
+        f.write(f'#EXTINF:-1 tvg-id="" tvg-name="{movie_name}" tvg-logo="" group-title="MOVIES | Adult",{movie_name}\n')
         f.write(f"{SERVER}/movie/{working_user}/{TOKEN_SECRET}/{movie_id}.mkv\n")
 
-    print(f"✅ تم التحديث بنجاح باستخدام الفيلم الحقيقي: {movie_name}")
+    print(f"✅ تم تحديث الفيلم بالـ ID الجديد: {movie_id}")
 def start_fuzzing():
     print("🚀 جاري بدء عملية الفحص وتخمين الحسابات...")
     for i in range(100, 999):
