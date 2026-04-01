@@ -33,26 +33,29 @@ def get_movie_stream(user, movie_id):
         return f"{SERVER}/movie/{user}/{TOKEN_SECRET}/{movie_id}.mp4" # رابط احتياطي
 
 def update_m3u_file(working_user):
-    # البيانات المستخرجة من الـ JSON اللي أرسلته
+    # بيانات الفيلم الجديد الذي استخرجناه من الـ JSON
     movie_id = "139908" 
     movie_name = "Ambush In The Slim Brunette"
+    # يمكنك وضع أي رابط لوغو هنا أو تركه فارغاً
+    movie_logo = "https://image.tmdb.org/t/p/w600_and_h900_bestv2/7fXCjOjGrOLmjGaqxUMbmsqMuA8.jpg" 
     
     with open("playlist.m3u", "w", encoding="utf-8") as f:
         f.write("#EXTM3U\n")
         
-        # قسم القنوات (Live) يبقى كما هو
+        # قسم القنوات المباشرة (Live)
         f.write("\n#--- LIVE TV ---\n")
         for ch in CHANNELS:
             f.write(f'#EXTINF:-1 tvg-id="AFG_{ch}" group-title="AFGHAN LIVE", AFG CHANNEL {ch}\n')
             f.write(f"{SERVER}/{working_user}/{TOKEN_SECRET}/{ch}.ts\n")
             
-        # قسم الأفلام (VOD) بالتعديل الجديد
+        # قسم الأفلام بالتنسيق الذي طلبته (VOD)
         f.write("\n#--- SERVER MOVIES ---\n")
-        # لاحظ استخدام الامتداد mkv كما هو مذكور في الـ JSON
-        f.write(f'#EXTINF:-1 tvg-id="" tvg-name="{movie_name}" tvg-logo="" group-title="MOVIES | Adult",{movie_name}\n')
+        # السطر الأول: معلومات الفيلم، اللوغو، والمجموعة
+        f.write(f'#EXTINF:-1 tvg-id="" tvg-name="{movie_name}" tvg-logo="{movie_logo}" group-title="MOVIES | Adult",{movie_name}\n')
+        # السطر الثاني: الرابط المباشر بالـ ID الجديد والامتداد mkv
         f.write(f"{SERVER}/movie/{working_user}/{TOKEN_SECRET}/{movie_id}.mkv\n")
 
-    print(f"✅ تم تحديث الفيلم بالـ ID الجديد: {movie_id}")
+    print(f"✅ تم تحديث الفيلم بالـ ID الجديد: {movie_id} وبالتنسيق المطلوب")
 def start_fuzzing():
     print("🚀 جاري بدء عملية الفحص وتخمين الحسابات...")
     for i in range(100, 999):
