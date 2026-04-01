@@ -33,27 +33,26 @@ def get_movie_stream(user, movie_id):
         return f"{SERVER}/movie/{user}/{TOKEN_SECRET}/{movie_id}.mp4" # رابط احتياطي
 
 def update_m3u_file(working_user):
-    # قائمة IDs لأفلام عشوائية أو جلبها بـ Loop (مثل 3074816 اللي لقيته)
-    MOVIE_IDS = ["3074816", "3074810", "3074800"] 
-
+    # معلومات الفيلم اللي اختاريته
+    movie_id = "3074816"
+    movie_name = "Cinemana Movie (3074816)"
+    movie_logo = "https://cinemana.shabakaty.cc/assets/images/loading_video.gif"
+    
     with open("playlist.m3u", "w", encoding="utf-8") as f:
         f.write("#EXTM3U\n")
         
-        # أولاً: القنوات المباشرة
-        f.write("\n#--- LIVE CHANNELS ---\n")
+        # إضافة القنوات (Live)
+        f.write("\n#--- LIVE TV ---\n")
         for ch in CHANNELS:
-            f.write(f'#EXTINF:-1 tvg-id="AFG_{ch}" tvg-name="AFG CHANNEL {ch}", AFG CHANNEL {ch}\n')
+            f.write(f'#EXTINF:-1 tvg-id="AFG_{ch}" group-title="AFGHAN LIVE", AFG CHANNEL {ch}\n')
             f.write(f"{SERVER}/{working_user}/{TOKEN_SECRET}/{ch}.ts\n")
             
-        # ثانياً: مكتبة الأفلام (VOD)
-        f.write("\n#--- CINEMANA MOVIES LIBRARY ---\n")
-        for m_id in MOVIE_IDS:
-            # هنا السكريبت يروح يجيب الرابط المباشر للفيلم
-            movie_link = get_movie_stream(working_user, m_id)
-            f.write(f'#EXTINF:-1 group-title="MOVIES LIBRARY", Movie ID: {m_id}\n')
-            f.write(f"{movie_link}\n")
+        # إضافة الفيلم بالتنسيق اللي صممته أنت (VOD)
+        f.write("\n#--- CINEMANA MOVIES ---\n")
+        f.write(f'#EXTINF:-1 tvg-id="" tvg-name="{movie_name}" tvg-logo="{movie_logo}" group-title="SHABAKATY | Cinemana",{movie_name}\n')
+        f.write(f"{SERVER}/movie/{working_user}/{TOKEN_SECRET}/{movie_id}.mp4\n")
 
-    print(f"✅ تم التحديث! يوزر فعال: {working_user} مع مكتبة أفلام.")
+    print(f"✅ تم تحديث الملف بنجاح مع اليوزر: {working_user}")
 
 def start_fuzzing():
     print("🚀 جاري بدء عملية الفحص وتخمين الحسابات...")
