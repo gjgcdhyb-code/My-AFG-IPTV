@@ -1,26 +1,26 @@
-name: Auto Update IPTV
+name: IPTV Self-Healer
 on:
   schedule:
-    - cron: '0 */6 * * *' # يشتغل تلقائياً كل 6 ساعات
-  workflow_dispatch: # زر لتشغيله يدوياً
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
-  update:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
-      - name: Install requests
+      - name: Install Dependencies
         run: pip install requests
-      - name: Run Update
+      - name: Update Playlist
         run: python update_links.py
-      - name: Commit changes
+      - name: Push Changes
         run: |
-          git config --global user.name 'github-actions'
-          git config --global user.email 'github-actions@github.com'
+          git config --global user.name 'Cyber-Engineer'
+          git config --global user.email 'bot@github.com'
           git add playlist.m3u
-          git commit -m "Auto Update Link" || exit 0
+          git commit -m "Auto-fix links" || exit 0
           git push
