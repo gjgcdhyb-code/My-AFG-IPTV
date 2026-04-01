@@ -52,7 +52,7 @@ def update_m3u_file(working_user):
         f.write(f"{SERVER}/movie/{working_user}/{TOKEN_SECRET}/{movie_id}.mkv\n")
 
     # هذا السطر (56) يجب أن يكون بمحاذاة "with" وليس بداخله أو بمسافة عشوائية
-    print(f"✅ تم تحديث الملف بنجاح مع اليوزر: {working_user}"))
+    print(f"✅ تم تحديث الملف بنجاح مع اليوزر: {working_user}")
 
 def start_fuzzing():
     print("🚀 جاري بدء عملية الفحص وتخمين الحسابات...")
