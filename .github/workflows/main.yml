@@ -1,3 +1,5 @@
+permissions:
+  contents: write  # هذا السطر يسمح للأكشن بعمل push للملفات
 name: IPTV Self-Healer
 on:
   schedule:
